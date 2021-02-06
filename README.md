@@ -13,4 +13,4 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ### `yarn validate`
 
-Checks format and typings and lints
+Checks format, typings and eslint errors
