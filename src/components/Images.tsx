@@ -13,10 +13,6 @@ export const Images: React.FC<Props> = ({page}) => {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [pictures, setPictures] = useState<Picture[]>([]);
 
-  useEffect(() => {
-    console.log('loading: ', loading);
-  }, [loading]);
-
   const fetchImages = useCallback(async () => {
     setLoading(true);
     const {data, error} = await getImages(page);

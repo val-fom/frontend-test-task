@@ -9,10 +9,6 @@ export const Image: React.FC<Props> = ({id}) => {
   const [loading, setLoading] = useState(false);
   const [picture, setPicture] = useState<FullPicture | null>(null);
 
-  useEffect(() => {
-    console.log('loading: ', loading);
-  }, [loading]);
-
   const fetchImages = useCallback(async () => {
     setLoading(true);
     const {data, error} = await getImage(id);
@@ -29,6 +25,10 @@ export const Image: React.FC<Props> = ({id}) => {
   useEffect(() => {
     fetchImages();
   }, [fetchImages]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="Image">
