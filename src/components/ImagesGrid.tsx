@@ -9,7 +9,7 @@ export const ImagesGrid: React.FC<Props> = ({pictures}) => {
   return (
     <div>
       {pictures.map((picture) => (
-        <Thumbnail picture={picture} />
+        <Thumbnail picture={picture} key={picture.id} />
       ))}
     </div>
   );
