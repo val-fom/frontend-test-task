@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {getImages} from 'api/images';
 import {Pagination} from './Pagination';
 import {ImagesGrid} from './ImagesGrid';
+import {useHistory} from 'react-router-dom';
 
 interface Props {
   page: string;
@@ -35,10 +36,25 @@ export const Images: React.FC<Props> = ({page}) => {
     fetchImages();
   }, [fetchImages]);
 
+  let history = useHistory();
+
+  const handlePageChange = useCallback(
+    ({selected}) => {
+      history.push(`/images/${selected}`);
+    },
+    [history],
+  );
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="Images">
       {pictures && <ImagesGrid pictures={pictures} />}
-      {pageData && <Pagination pageData={pageData} />}
+      {pageData && (
+        <Pagination pageData={pageData} onPageChange={handlePageChange} />
+      )}
     </div>
   );
 };
