@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {getImages} from 'api/images';
+import {getImage, getImages} from 'api/images';
 import {Pagination} from './Pagination';
 import {ImagesGrid} from './ImagesGrid';
 
@@ -46,15 +46,39 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     [history],
   );
 
+  const [fullPictures, setFullPictures] = useState<Record<string, FullPicture>>(
+    {},
+  );
+
+  const getFullImage = useCallback(
+    async (id: string) => {
+      const {data, error} = await getImage(id);
+
+      if (error) {
+        console.error(error);
+      }
+      if (data) {
+        setFullPictures({...fullPictures, [data.id]: data});
+      }
+    },
+    [fullPictures],
+  );
+
   const handleImageClick = useCallback(
-    (picture: Picture) => {
-      setIsOpen(true);
+    async (picture: Picture) => {
       const clickedIndex = pictures.findIndex(({id}) => id === picture.id);
+
       if (clickedIndex !== -1) {
         setPhotoIndex(clickedIndex);
       }
+
+      if (!fullPictures[picture.id]) {
+        await getFullImage(picture.id);
+      }
+
+      setIsOpen(true);
     },
-    [pictures],
+    [fullPictures, getFullImage, pictures],
   );
 
   if (loading) {
@@ -71,7 +95,7 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       )}
       {isOpen && (
         <Lightbox
-          mainSrc={pictures[photoIndex].cropped_picture}
+          mainSrc={fullPictures[pictures[photoIndex].id].full_picture}
           nextSrc={pictures[(photoIndex + 1) % pictures.length].cropped_picture}
           prevSrc={
             pictures[(photoIndex + pictures.length - 1) % pictures.length]
