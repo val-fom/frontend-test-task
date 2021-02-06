@@ -10,7 +10,8 @@ export const CoreLayout: React.FC<{}> = () => {
   let history = useHistory();
   const handlePageChange = useCallback(
     ({selected}) => {
-      history.push(`/images/${selected + 1}`);
+      const {pathname} = history.location;
+      history.push(pathname.replace(/[^/]+$/, selected + 1));
     },
     [history],
   );
