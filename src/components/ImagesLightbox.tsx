@@ -49,7 +49,7 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
 
   const handlePageChange = useCallback(
     ({selected}) => {
-      history.push(`/lightbox/${selected}`);
+      history.push(`/lightbox/${selected + 1}`);
     },
     [history],
   );

@@ -36,7 +36,7 @@ export const Images: React.FC<Props> = ({page}) => {
 
   const handlePageChange = useCallback(
     ({selected}) => {
-      history.push(`/images/${selected}`);
+      history.push(`/images/${selected + 1}`);
     },
     [history],
   );

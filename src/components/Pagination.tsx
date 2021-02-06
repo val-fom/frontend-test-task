@@ -16,7 +16,7 @@ export const Pagination: React.FC<Props> = ({pageData, onPageChange}) => {
         pageRangeDisplayed={5}
         marginPagesDisplayed={1}
         onPageChange={onPageChange}
-        initialPage={pageData.page}
+        forcePage={pageData.page - 1}
       />
     </div>
   );
