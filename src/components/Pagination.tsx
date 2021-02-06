@@ -4,6 +4,8 @@ import {useCallback} from 'react';
 import ReactPaginate from 'react-paginate';
 import {useHistory} from 'react-router-dom';
 
+import './Pagination.css';
+
 interface Props {
   pageData: PageData;
 }
@@ -19,7 +21,7 @@ export const Pagination: React.FC<Props> = ({pageData}) => {
   );
 
   return (
-    <div className="container">
+    <div className="Pagination">
       <ReactPaginate
         pageCount={pageData.pageCount}
         pageRangeDisplayed={5}
