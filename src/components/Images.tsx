@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {getImages} from 'api/images';
+import {Pagination} from './Pagination';
+import {ImagesGrid} from './ImagesGrid';
 
-interface Page {
-  hasMore: boolean;
-  page: number;
-  pageCount: number;
+interface Props {
+  page: string;
 }
 
-export function Images() {
+export const Images: React.FC<Props> = ({page}) => {
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState<Page | null>(null);
+  const [pageData, setPageData] = useState<PageData | null>(null);
   const [pictures, setPictures] = useState<Picture[]>([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function Images() {
 
   const fetchImages = useCallback(async () => {
     setLoading(true);
-    const {data, error} = await getImages(1);
+    const {data, error} = await getImages(page);
     setLoading(false);
 
     if (error) {
@@ -27,9 +27,9 @@ export function Images() {
     if (data) {
       const {pictures, ...page} = data;
       setPictures(data.pictures);
-      setPage(page);
+      setPageData(page);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     fetchImages();
@@ -37,8 +37,8 @@ export function Images() {
 
   return (
     <div className="Images">
-      <div>{JSON.stringify(pictures, null, 2)}</div>
-      <div>{JSON.stringify(page, null, 2)}</div>
+      {pictures && <ImagesGrid pictures={pictures} />}
+      {pageData && <Pagination pageData={pageData} />}
     </div>
   );
-}
+};

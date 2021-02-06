@@ -9,3 +9,9 @@ interface FullPicture extends Picture {
   full_picture: string;
   tags: string;
 }
+
+interface PageData {
+  hasMore: boolean;
+  page: number;
+  pageCount: number;
+}

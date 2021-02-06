@@ -1,13 +1,10 @@
 import {makeFetcher} from './client';
 
-export interface GetImagesResponse {
-  hasMore: boolean;
-  page: number;
-  pageCount: number;
+export interface GetImagesResponse extends PageData {
   pictures: Picture[];
 }
 
-type GetImagesRequest = number;
+type GetImagesRequest = string;
 
 export const getImages = makeFetcher<GetImagesResponse, GetImagesRequest>(
   (page) => `/images?page=${page}`,
