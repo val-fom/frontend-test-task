@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Lightbox from 'react-image-lightbox';
 
 import {ImagesGrid} from './ImagesGrid';
+import {Link} from 'react-router-dom';
 
 interface Props {
   page: string;
@@ -146,6 +147,10 @@ export const ImagesLightbox: React.FC<Props> = ({page, setPageData}) => {
           imageCaption={imageCaptions}
         />
       )}
+
+      <Link className="Link" to="/images/1">
+        Router based gallery
+      </Link>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import {getImages} from 'api/images';
 import React, {useCallback, useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 
 import {ImagesGrid} from './ImagesGrid';
 
@@ -38,6 +39,10 @@ export const Images: React.FC<Props> = ({page, setPageData}) => {
   return (
     <div className="Images">
       {pictures && <ImagesGrid pictures={pictures} />}
+
+      <Link className="Link" to="/lightbox/1">
+        Lightbox based gallery
+      </Link>
     </div>
   );
 };
