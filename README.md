@@ -14,3 +14,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 ### `yarn validate`
 
 Checks format, typings and eslint errors
+
+## To run the project, create `.env` file with environment variables
+
+```
+REACT_APP_API_URI=<API_URI>
+REACT_APP_API_KEY=<API_KEY>
+```
