@@ -1,16 +1,15 @@
-import React, {useCallback, useEffect, useState} from 'react';
 import {getImages} from 'api/images';
-import {Pagination} from './Pagination';
+import React, {useCallback, useEffect, useState} from 'react';
+
 import {ImagesGrid} from './ImagesGrid';
-import {useHistory} from 'react-router-dom';
 
 interface Props {
   page: string;
+  setPageData: (data: PageData) => void;
 }
 
-export const Images: React.FC<Props> = ({page}) => {
+export const Images: React.FC<Props> = ({page, setPageData}) => {
   const [loading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState<PageData | null>(null);
   const [pictures, setPictures] = useState<Picture[]>([]);
 
   const fetchImages = useCallback(async () => {
@@ -26,20 +25,11 @@ export const Images: React.FC<Props> = ({page}) => {
       setPictures(data.pictures);
       setPageData(page);
     }
-  }, [page]);
+  }, [page, setPageData]);
 
   useEffect(() => {
     fetchImages();
   }, [fetchImages]);
-
-  let history = useHistory();
-
-  const handlePageChange = useCallback(
-    ({selected}) => {
-      history.push(`/images/${selected + 1}`);
-    },
-    [history],
-  );
 
   if (loading) {
     return <div>Loading...</div>;
@@ -48,9 +38,6 @@ export const Images: React.FC<Props> = ({page}) => {
   return (
     <div className="Images">
       {pictures && <ImagesGrid pictures={pictures} />}
-      {pageData && (
-        <Pagination pageData={pageData} onPageChange={handlePageChange} />
-      )}
     </div>
   );
 };

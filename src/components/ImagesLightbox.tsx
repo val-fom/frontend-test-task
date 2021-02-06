@@ -1,22 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {getImage, getImages} from 'api/images';
-import {Pagination} from './Pagination';
-import {ImagesGrid} from './ImagesGrid';
-
-import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import {useHistory} from 'react-router-dom';
+
+import {getImage, getImages} from 'api/images';
+import React, {useCallback, useEffect, useState} from 'react';
+import Lightbox from 'react-image-lightbox';
+
+import {ImagesGrid} from './ImagesGrid';
 
 interface Props {
   page: string;
+  setPageData: (data: PageData) => void;
 }
 
-export const ImagesLightbox: React.FC<Props> = ({page}) => {
+export const ImagesLightbox: React.FC<Props> = ({page, setPageData}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   const [loading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState<PageData | null>(null);
   const [pictures, setPictures] = useState<Picture[]>([]);
 
   const prevIndex = (photoIndex + pictures.length - 1) % pictures.length;
@@ -39,20 +38,11 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       setPictures(data.pictures);
       setPageData(page);
     }
-  }, [page]);
+  }, [page, setPageData]);
 
   useEffect(() => {
     fetchImages();
   }, [fetchImages]);
-
-  let history = useHistory();
-
-  const handlePageChange = useCallback(
-    ({selected}) => {
-      history.push(`/lightbox/${selected + 1}`);
-    },
-    [history],
-  );
 
   const getFullImages = useCallback(
     async (...missingIds: string[]) => {
@@ -144,9 +134,7 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       {pictures && (
         <ImagesGrid pictures={pictures} onImageClick={handleImageClick} />
       )}
-      {pageData && (
-        <Pagination pageData={pageData} onPageChange={handlePageChange} />
-      )}
+
       {isOpen && (
         <Lightbox
           mainSrc={getFullPicture(photoIndex)?.full_picture}
