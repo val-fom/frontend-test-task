@@ -1,12 +1,58 @@
 .ImagesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+  display: flex;
+  flex-wrap: wrap;
   margin: auto;
-  justify-content: center;
+}
+
+@media (max-width: 1800px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 6);
+  }
+}
+
+@media (max-width: 2100px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 7);
+  }
+}
+
+@media (max-width: 1500px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 5);
+  }
+}
+
+@media (max-width: 1200px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 4);
+  }
+}
+
+@media (max-width: 900px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 3);
+  }
+}
+
+@media (max-width: 600px) {
+  .ImagesGrid {
+    --item-width: calc(100vw / 2);
+  }
+}
+
+@media (max-width: 300px) {
+  .ImagesGrid {
+    --item-width: 100vw;
+  }
+}
+
+.ImagesGrid a {
+  width: var(--item-width);
+  height: 300px;
+  overflow: hidden;
 }
 
 .ImagesGrid img {
   display: block;
-  width: 300px;
-  height: 300px;
+  height: 100%;
 }
