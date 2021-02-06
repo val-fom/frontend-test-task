@@ -68,9 +68,7 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     async (picture: Picture) => {
       const clickedIndex = pictures.findIndex(({id}) => id === picture.id);
 
-      if (clickedIndex !== -1) {
-        setPhotoIndex(clickedIndex);
-      }
+      setPhotoIndex(clickedIndex);
 
       if (!fullPictures[picture.id]) {
         await getFullImage(picture.id);
@@ -95,14 +93,17 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       )}
       {isOpen && (
         <Lightbox
-          mainSrc={fullPictures[pictures[photoIndex].id].full_picture}
-          nextSrc={pictures[(photoIndex + 1) % pictures.length].cropped_picture}
+          mainSrc={fullPictures[pictures[photoIndex].id]?.full_picture}
+          nextSrc={
+            fullPictures[pictures[(photoIndex + 1) % pictures.length].id]
+              ?.full_picture
+          }
           prevSrc={
-            pictures[(photoIndex + pictures.length - 1) % pictures.length]
-              .cropped_picture
+            fullPictures[pictures[(photoIndex - 1) % pictures.length].id]
+              ?.full_picture
           }
           onCloseRequest={() => setIsOpen(false)}
-          onMovePrevRequest={() =>
+          onMovePrevRequest={async () =>
             setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length)
           }
           onMoveNextRequest={() =>
