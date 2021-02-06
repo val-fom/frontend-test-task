@@ -14,9 +14,17 @@ interface Props {
 export const ImagesLightbox: React.FC<Props> = ({page}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [pictures, setPictures] = useState<Picture[]>([]);
+
+  const prevIndex = (photoIndex + pictures.length - 1) % pictures.length;
+  const nextIndex = (photoIndex + 1) % pictures.length;
+
+  const [fullPictures, setFullPictures] = useState<Record<string, FullPicture>>(
+    {},
+  );
 
   const fetchImages = useCallback(async () => {
     setLoading(true);
@@ -44,10 +52,6 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       history.push(`/lightbox/${selected}`);
     },
     [history],
-  );
-
-  const [fullPictures, setFullPictures] = useState<Record<string, FullPicture>>(
-    {},
   );
 
   const getFullImages = useCallback(
@@ -87,39 +91,44 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     [fullPictures, getFullImages, pictures],
   );
 
-  const getPrevNextFullPictures = useCallback(
-    async (index: number) => {
-      if (pictures.length) {
-        const nextIndex = (index + 1) % pictures.length;
-        const nextPicture = pictures[nextIndex];
+  const getPrevNextFullPictures = useCallback(() => {
+    if (pictures.length) {
+      const nextPicture = pictures[nextIndex];
+      const prevPicture = pictures[prevIndex];
 
-        const prevIndex = (index + pictures.length - 1) % pictures.length;
-        const prevPicture = pictures[prevIndex];
+      const missingIds = [nextPicture.id, prevPicture.id].filter(
+        (id) => !fullPictures[id],
+      );
 
-        const missingIds = [nextPicture.id, prevPicture.id].filter(
-          (id) => !fullPictures[id],
-        );
-
-        if (missingIds.length) {
-          await getFullImages(...missingIds);
-        }
+      if (missingIds.length) {
+        getFullImages(...missingIds);
       }
-    },
-    [fullPictures, getFullImages, pictures],
-  );
+    }
+  }, [fullPictures, getFullImages, nextIndex, pictures, prevIndex]);
 
   useEffect(() => {
     if (isOpen) {
-      getPrevNextFullPictures(photoIndex);
+      // prefetch next and prev image data
+      getPrevNextFullPictures();
     }
   }, [getPrevNextFullPictures, isOpen, photoIndex]);
+
+  const handleOnCloseRequest = useCallback(() => setIsOpen(false), []);
+
+  const onMovePrevRequest = useCallback(() => setPhotoIndex(prevIndex), [
+    prevIndex,
+  ]);
+
+  const onMoveNextRequest = useCallback(() => setPhotoIndex(nextIndex), [
+    nextIndex,
+  ]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  const prevIndex = (photoIndex + pictures.length - 1) % pictures.length;
-  const nextIndex = (photoIndex + 1) % pictures.length;
+  const getFullPictureSrc = (index: number) =>
+    fullPictures[pictures[index].id]?.full_picture;
 
   return (
     <div className="Images">
@@ -131,16 +140,12 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       )}
       {isOpen && (
         <Lightbox
-          mainSrc={fullPictures[pictures[photoIndex].id]?.full_picture}
-          nextSrc={fullPictures[pictures[nextIndex].id]?.full_picture}
-          prevSrc={fullPictures[pictures[prevIndex].id]?.full_picture}
-          onCloseRequest={() => setIsOpen(false)}
-          onMovePrevRequest={async () =>
-            setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length)
-          }
-          onMoveNextRequest={() =>
-            setPhotoIndex((photoIndex + 1) % pictures.length)
-          }
+          mainSrc={getFullPictureSrc(photoIndex)}
+          nextSrc={getFullPictureSrc(nextIndex)}
+          prevSrc={getFullPictureSrc(prevIndex)}
+          onCloseRequest={handleOnCloseRequest}
+          onMovePrevRequest={onMovePrevRequest}
+          onMoveNextRequest={onMoveNextRequest}
         />
       )}
     </div>
