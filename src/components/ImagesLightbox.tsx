@@ -118,6 +118,9 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     return <div>Loading...</div>;
   }
 
+  const prevIndex = (photoIndex + pictures.length - 1) % pictures.length;
+  const nextIndex = (photoIndex + 1) % pictures.length;
+
   return (
     <div className="Images">
       {pictures && (
@@ -129,15 +132,8 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       {isOpen && (
         <Lightbox
           mainSrc={fullPictures[pictures[photoIndex].id]?.full_picture}
-          nextSrc={
-            fullPictures[pictures[(photoIndex + 1) % pictures.length].id]
-              ?.full_picture
-          }
-          prevSrc={
-            fullPictures[
-              pictures[(photoIndex + pictures.length - 1) % pictures.length].id
-            ]?.full_picture
-          }
+          nextSrc={fullPictures[pictures[nextIndex].id]?.full_picture}
+          prevSrc={fullPictures[pictures[prevIndex].id]?.full_picture}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={async () =>
             setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length)
