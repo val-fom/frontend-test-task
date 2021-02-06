@@ -1,5 +1,6 @@
 .Pagination {
   display: flex;
+  margin-top: 20px;
 }
 
 .Pagination ul {
@@ -10,7 +11,15 @@
 
 .Pagination li {
   list-style: none;
-  padding: 0;
+}
+.Pagination li.selected a {
+  color: rebeccapurple;
+  border-color: rebeccapurple;
+}
+
+.Pagination a {
+  cursor: pointer;
+  display: block;
   border: 1px solid;
   border-radius: 3px;
   padding: 2px;
