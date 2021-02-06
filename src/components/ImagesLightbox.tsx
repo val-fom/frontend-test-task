@@ -127,8 +127,17 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     return <div>Loading...</div>;
   }
 
-  const getFullPictureSrc = (index: number) =>
-    fullPictures[pictures[index].id]?.full_picture;
+  const getFullPicture = (index: number) => fullPictures[pictures[index]?.id];
+
+  const imageCaptions = (
+    <ul>
+      {Object.entries(getFullPicture(photoIndex) || {})
+        .filter(([key]) => ['author', 'camera', 'tags'].includes(key))
+        .map((pair) => (
+          <li>{pair.join(': ')}</li>
+        ))}
+    </ul>
+  );
 
   return (
     <div className="Images">
@@ -140,12 +149,13 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       )}
       {isOpen && (
         <Lightbox
-          mainSrc={getFullPictureSrc(photoIndex)}
-          nextSrc={getFullPictureSrc(nextIndex)}
-          prevSrc={getFullPictureSrc(prevIndex)}
+          mainSrc={getFullPicture(photoIndex)?.full_picture}
+          nextSrc={getFullPicture(nextIndex)?.full_picture}
+          prevSrc={getFullPicture(prevIndex)?.full_picture}
           onCloseRequest={handleOnCloseRequest}
           onMovePrevRequest={onMovePrevRequest}
           onMoveNextRequest={onMoveNextRequest}
+          imageCaption={imageCaptions}
         />
       )}
     </div>
