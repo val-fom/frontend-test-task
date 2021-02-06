@@ -32,6 +32,7 @@ export const Image: React.FC<Props> = ({id}) => {
 
   return (
     <div className="Image">
+      <img src={picture?.full_picture} alt="full"></img>
       <div>{JSON.stringify(picture, null, 2)}</div>
     </div>
   );
