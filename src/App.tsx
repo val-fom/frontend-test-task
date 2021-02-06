@@ -1,47 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {getImages} from './api/images';
-import './App.css';
+import React from 'react';
+import {BrowserRouter as Router} from 'react-router-dom';
+import {CoreLayout} from 'layouts/CoreLayout';
 
-interface Page {
-  hasMore: boolean;
-  page: number;
-  pageCount: number;
-}
-
-function App() {
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState<Page | null>(null);
-  const [pictures, setPictures] = useState<Picture[]>([]);
-
-  useEffect(() => {
-    console.log('loading: ', loading);
-  }, [loading]);
-
-  const fetchImages = useCallback(async () => {
-    setLoading(true);
-    const {data, error} = await getImages(1);
-    setLoading(false);
-
-    if (error) {
-      console.error(error);
-    }
-    if (data) {
-      const {pictures, ...page} = data;
-      setPictures(data.pictures);
-      setPage(page);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
-
-  return (
-    <div className="App">
-      <div>{JSON.stringify(pictures, null, 2)}</div>
-      <div>{JSON.stringify(page, null, 2)}</div>
-    </div>
-  );
-}
+const App: React.FC = () => (
+  <Router>
+    <CoreLayout />
+  </Router>
+);
 
 export default App;

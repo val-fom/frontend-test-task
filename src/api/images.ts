@@ -13,7 +13,7 @@ export const getImages = makeFetcher<GetImagesResponse, GetImagesRequest>(
   (page) => `/images?page=${page}`,
 );
 
-export interface GetImageResponse {}
+export interface GetImageResponse extends FullPicture {}
 
 type GetImageRequest = string;
 
