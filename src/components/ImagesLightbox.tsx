@@ -50,16 +50,24 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
     {},
   );
 
-  const getFullImage = useCallback(
-    async (id: string) => {
-      const {data, error} = await getImage(id);
+  const getFullImages = useCallback(
+    async (...missingIds: string[]) => {
+      const responses = await Promise.all(missingIds.map((id) => getImage(id)));
 
-      if (error) {
-        console.error(error);
-      }
-      if (data) {
-        setFullPictures({...fullPictures, [data.id]: data});
-      }
+      const newFullPictures = responses.reduce<Record<string, FullPicture>>(
+        (acc, {data}) => {
+          if (data) {
+            return {
+              ...acc,
+              [data.id]: data as FullPicture,
+            };
+          }
+          return acc;
+        },
+        {},
+      );
+
+      setFullPictures({...fullPictures, ...newFullPictures});
     },
     [fullPictures],
   );
@@ -71,13 +79,40 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
       setPhotoIndex(clickedIndex);
 
       if (!fullPictures[picture.id]) {
-        await getFullImage(picture.id);
+        await getFullImages(picture.id);
       }
 
       setIsOpen(true);
     },
-    [fullPictures, getFullImage, pictures],
+    [fullPictures, getFullImages, pictures],
   );
+
+  const getPrevNextFullPictures = useCallback(
+    async (index: number) => {
+      if (pictures.length) {
+        const nextIndex = (index + 1) % pictures.length;
+        const nextPicture = pictures[nextIndex];
+
+        const prevIndex = (index + pictures.length - 1) % pictures.length;
+        const prevPicture = pictures[prevIndex];
+
+        const missingIds = [nextPicture.id, prevPicture.id].filter(
+          (id) => !fullPictures[id],
+        );
+
+        if (missingIds.length) {
+          await getFullImages(...missingIds);
+        }
+      }
+    },
+    [fullPictures, getFullImages, pictures],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      getPrevNextFullPictures(photoIndex);
+    }
+  }, [getPrevNextFullPictures, isOpen, photoIndex]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -99,8 +134,9 @@ export const ImagesLightbox: React.FC<Props> = ({page}) => {
               ?.full_picture
           }
           prevSrc={
-            fullPictures[pictures[(photoIndex - 1) % pictures.length].id]
-              ?.full_picture
+            fullPictures[
+              pictures[(photoIndex + pictures.length - 1) % pictures.length].id
+            ]?.full_picture
           }
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={async () =>
