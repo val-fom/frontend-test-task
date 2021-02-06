@@ -1,10 +1,9 @@
+import './Pagination.css';
+
 import * as React from 'react';
 import {useCallback} from 'react';
-
 import ReactPaginate from 'react-paginate';
 import {useHistory} from 'react-router-dom';
-
-import './Pagination.css';
 
 interface Props {
   pageData: PageData;

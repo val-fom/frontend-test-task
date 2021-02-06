@@ -1,0 +1,12 @@
+.ImagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+  margin: auto;
+  justify-content: center;
+}
+
+.ImagesGrid img {
+  display: block;
+  width: 300px;
+  height: 300px;
+}

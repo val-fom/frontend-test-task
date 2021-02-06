@@ -1,4 +1,7 @@
+import './ImagesGrid.css';
+
 import * as React from 'react';
+
 import {Thumbnail} from './Thumbnail';
 
 interface Props {
@@ -7,7 +10,7 @@ interface Props {
 
 export const ImagesGrid: React.FC<Props> = ({pictures}) => {
   return (
-    <div>
+    <div className="ImagesGrid">
       {pictures.map((picture) => (
         <Thumbnail picture={picture} key={picture.id} />
       ))}
